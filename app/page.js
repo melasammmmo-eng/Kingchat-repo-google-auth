@@ -1,8 +1,14 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Home() {
   const { data: session } = useSession();
+
+  // Record IP when page is open
+  useEffect(() => {
+    fetch("/api/record-ip", { method: "POST" }).catch(() => {});
+  }, []);
 
   return (
     <div style={{
@@ -14,30 +20,39 @@ export default function Home() {
       alignItems: "center",
       margin: 0,
       color: "white",
-      fontFamily: "sans-serif"
+      fontFamily: "sans-serif",
+      textAlign: "center",
+      padding: "20px"
     }}>
       {!session ? (
-        <button
-          onClick={() => signIn()}
-          style={{
-            backgroundColor: "white",
-            color: "black",
-            border: "none",
-            borderRadius: "50px",
-            padding: "18px 50px",
-            fontSize: "20px",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
-        >
-          Log in
-        </button>
-      ) : (
-        <div style={{ textAlign: "center" }}>
-          <h2>You are logged in as</h2>
-          <p style={{ color: "#aaa", marginTop: "8px", fontSize: "18px" }}>
-            {session.user?.email || "Unknown"}
+        <>
+          <button
+            onClick={() => signIn()}
+            style={{
+              backgroundColor: "white",
+              color: "black",
+              border: "none",
+              borderRadius: "50px",
+              padding: "18px 50px",
+              fontSize: "20px",
+              fontWeight: "bold",
+              cursor: "pointer"
+            }}
+          >
+            Log in
+          </button>
+
+          <p style={{ color: "#ff5555", marginTop: "40px", fontSize: "14px", maxWidth: "300px" }}>
+            ⚠️ Warning: By logging in, your IP address will be recorded for security purposes.
           </p>
+        </>
+      ) : (
+        <div>
+          <h2>You are logged in as</h2>
+          <p style={{ color: "#aaa", marginTop: "10px", fontSize: "18px" }}>
+            {session.user?.name || session.user?.email || "Unknown"}
+          </p>
+
           <button
             onClick={() => signOut()}
             style={{

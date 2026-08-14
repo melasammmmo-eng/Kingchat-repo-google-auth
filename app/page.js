@@ -1,5 +1,5 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -9,9 +9,12 @@ export default function Home() {
       backgroundColor: "black",
       height: "100vh",
       display: "flex",
+      flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      margin: 0
+      margin: 0,
+      color: "white",
+      fontFamily: "sans-serif"
     }}>
       {!session ? (
         <button
@@ -30,9 +33,26 @@ export default function Home() {
           Log in
         </button>
       ) : (
-        <h1 style={{ color: "white" }}>
-          Logged in as {session.user?.name}
-        </h1>
+        <div style={{ textAlign: "center" }}>
+          <h2>You are logged in as</h2>
+          <p style={{ color: "#aaa", marginTop: "8px", fontSize: "18px" }}>
+            {session.user?.email || "Unknown"}
+          </p>
+          <button
+            onClick={() => signOut()}
+            style={{
+              marginTop: "30px",
+              backgroundColor: "#333",
+              color: "white",
+              border: "none",
+              borderRadius: "50px",
+              padding: "12px 30px",
+              cursor: "pointer"
+            }}
+          >
+            Log out
+          </button>
+        </div>
       )}
     </div>
   );

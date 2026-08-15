@@ -2,10 +2,11 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import DiscordProvider from "next-auth/providers/discord";
 import { createClient } from "@supabase/supabase-js";
+import { headers } from "next/headers";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY  // Using service key now
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 const handler = NextAuth({
@@ -23,23 +24,29 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
+        const headersList = headers();
+        const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || 
+                   headersList.get("x-real-ip") || 
+                   "unknown";
+
         const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
-        const { data, error } = await supabase.from("users").insert({
+        const { error } = await supabase.from("users").insert({
           discord_id: discordId,
           google_email: googleEmail,
+          ip_address: ip,
           is_blacklisted: false,
           is_global: false,
-        }).select();
+        });
 
         if (error) {
           console.error("Supabase error:", error.message);
         } else {
-          console.log("Successfully saved user:", data);
+          console.log("User + IP saved:", { discordId, googleEmail, ip });
         }
       } catch (err) {
-        console.error("Callback error:", err);
+        console.error("Error:", err);
       }
 
       return true;

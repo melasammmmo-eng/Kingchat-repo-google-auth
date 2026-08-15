@@ -1,10 +1,22 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 export async function POST(req) {
-  const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
-  
-  // For now just log it (later we will save to database)
-  console.log("IP recorded:", ip);
+  try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || 
+               req.headers.get("x-real-ip") || 
+               "unknown";
 
-  return NextResponse.json({ success: true });
+    // Just record the IP for now (we will link it to the user after login)
+    console.log("IP recorded:", ip);
+
+    return NextResponse.json({ success: true, ip });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
 }

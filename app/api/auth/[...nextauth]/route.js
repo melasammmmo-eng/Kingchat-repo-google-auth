@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import DiscordProvider from "next-auth/providers/discord";
 import { createClient } from "@supabase/supabase-js";
-import { headers } from "next/headers";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -22,17 +21,21 @@ const handler = NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile, req }) {
       try {
-        const headersList = headers();
-        const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || 
-                   headersList.get("x-real-ip") || 
-                   "unknown";
+        // Try to get IP from the request
+        let ip = "unknown";
+        
+        if (req?.headers) {
+          const forwarded = req.headers["x-forwarded-for"];
+          ip = forwarded ? forwarded.split(",")[0].trim() : 
+               req.headers["x-real-ip"] || "unknown";
+        }
 
         const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
-        const { error } = await supabase.from("users").insert({
+        await supabase.from("users").insert({
           discord_id: discordId,
           google_email: googleEmail,
           ip_address: ip,
@@ -40,13 +43,9 @@ const handler = NextAuth({
           is_global: false,
         });
 
-        if (error) {
-          console.error("Supabase error:", error.message);
-        } else {
-          console.log("User + IP saved:", { discordId, googleEmail, ip });
-        }
+        console.log("Saved:", { discordId, googleEmail, ip });
       } catch (err) {
-        console.error("Error:", err);
+        console.error("Save error:", err);
       }
 
       return true;

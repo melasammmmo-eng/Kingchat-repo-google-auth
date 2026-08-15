@@ -1,6 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import DiscordProvider from "next-auth/providers/discord";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 const handler = NextAuth({
   providers: [
@@ -14,6 +20,26 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      try {
+        const discordId = account.provider === "discord" ? profile.id : null;
+        const googleEmail = account.provider === "google" ? user.email : null;
+
+        // Save or update user in Supabase
+        await supabase.from("users").upsert({
+          discord_id: discordId,
+          google_email: googleEmail,
+          is_blacklisted: false,
+          is_global: false,
+        }, { onConflict: "discord_id" });
+
+      } catch (err) {
+        console.error("Error saving user:", err);
+      }
+      return true;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };

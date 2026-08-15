@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_KEY  // Using service key now
 );
 
 const handler = NextAuth({
@@ -26,22 +26,20 @@ const handler = NextAuth({
         const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
-        // Insert a new row every time for now (simpler and more reliable)
-        const { error } = await supabase.from("users").insert({
+        const { data, error } = await supabase.from("users").insert({
           discord_id: discordId,
           google_email: googleEmail,
-          ip_address: null,
           is_blacklisted: false,
           is_global: false,
-        });
+        }).select();
 
         if (error) {
-          console.error("Supabase insert error:", error);
+          console.error("Supabase error:", error.message);
         } else {
-          console.log("User saved successfully");
+          console.log("Successfully saved user:", data);
         }
       } catch (err) {
-        console.error("Error in signIn callback:", err);
+        console.error("Callback error:", err);
       }
 
       return true;

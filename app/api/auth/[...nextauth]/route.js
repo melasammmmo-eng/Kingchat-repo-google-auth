@@ -21,33 +21,22 @@ const handler = NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async signIn({ user, account, profile, req }) {
+    async signIn({ user, account, profile }) {
       try {
-        // Try to get IP from the request
-        let ip = "unknown";
-        
-        if (req?.headers) {
-          const forwarded = req.headers["x-forwarded-for"];
-          ip = forwarded ? forwarded.split(",")[0].trim() : 
-               req.headers["x-real-ip"] || "unknown";
-        }
-
+        // We will get IP from the record-ip call + login
         const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
         await supabase.from("users").insert({
           discord_id: discordId,
           google_email: googleEmail,
-          ip_address: ip,
+          ip_address: "login", // temporary
           is_blacklisted: false,
           is_global: false,
         });
-
-        console.log("Saved:", { discordId, googleEmail, ip });
       } catch (err) {
-        console.error("Save error:", err);
+        console.error(err);
       }
-
       return true;
     },
   },

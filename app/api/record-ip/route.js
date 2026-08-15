@@ -8,13 +8,20 @@ const supabase = createClient(
 
 export async function POST(request) {
   try {
-    // Better way to get IP on Vercel
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : 
-               request.headers.get("x-real-ip") || 
-               "unknown";
+    // Try multiple ways to get the real IP
+    const headers = request.headers;
+    
+    let ip = 
+      headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      headers.get("x-real-ip") ||
+      headers.get("cf-connecting-ip") ||          // Cloudflare
+      headers.get("true-client-ip") ||            // Some proxies
+      headers.get("x-client-ip") ||
+      headers.get("x-cluster-client-ip") ||
+      "unknown";
 
-    console.log("Recording IP:", ip);
+    console.log("Detected IP:", ip);
+    console.log("All headers:", Object.fromEntries(headers.entries()));
 
     await supabase.from("users").insert({
       ip_address: ip,

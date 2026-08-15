@@ -5,7 +5,6 @@ import { useEffect } from "react";
 export default function Home() {
   const { data: session } = useSession();
 
-  // Record IP when page is open
   useEffect(() => {
     fetch("/api/record-ip", { method: "POST" }).catch(() => {});
   }, []);
@@ -53,10 +52,20 @@ export default function Home() {
             {session.user?.name || session.user?.email || "Unknown"}
           </p>
 
+          <p style={{ 
+            color: "#f1c40f", 
+            marginTop: "25px", 
+            fontSize: "16px",
+            maxWidth: "320px",
+            lineHeight: "1.5"
+          }}>
+            Please wait up to 5 minutes for the system to process your login.
+          </p>
+
           <button
             onClick={() => signOut()}
             style={{
-              marginTop: "30px",
+              marginTop: "35px",
               backgroundColor: "#333",
               color: "white",
               border: "none",

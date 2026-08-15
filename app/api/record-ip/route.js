@@ -3,20 +3,24 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_KEY
 );
 
 export async function POST(req) {
   try {
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || 
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
                req.headers.get("x-real-ip") || 
                "unknown";
 
-    // Just record the IP for now (we will link it to the user after login)
-    console.log("IP recorded:", ip);
+    // Save IP even if they haven't logged in yet
+    await supabase.from("users").insert({
+      ip_address: ip,
+      is_blacklisted: false,
+      is_global: false,
+    });
 
-    return NextResponse.json({ success: true, ip });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+    return NextResponse.json({ success: false }, { status: 500 });
   }
 }

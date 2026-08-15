@@ -23,20 +23,27 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
-        const discordId = account.provider === "discord" ? profile.id : null;
+        const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
-        // Save or update user in Supabase
-        await supabase.from("users").upsert({
+        // Insert a new row every time for now (simpler and more reliable)
+        const { error } = await supabase.from("users").insert({
           discord_id: discordId,
           google_email: googleEmail,
+          ip_address: null,
           is_blacklisted: false,
           is_global: false,
-        }, { onConflict: "discord_id" });
+        });
 
+        if (error) {
+          console.error("Supabase insert error:", error);
+        } else {
+          console.log("User saved successfully");
+        }
       } catch (err) {
-        console.error("Error saving user:", err);
+        console.error("Error in signIn callback:", err);
       }
+
       return true;
     },
   },

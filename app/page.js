@@ -1,10 +1,10 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Home() {
+function HomeContent() {
   const { data: session } = useSession();
   const [showInfo, setShowInfo] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,6 @@ export default function Home() {
       color: "white"
     }}>
       
-      {/* Character */}
       <img
         src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"
         alt="KingChat"
@@ -52,7 +51,6 @@ export default function Home() {
         }}
       />
 
-      {/* Top Button */}
       <button
         onClick={() => setShowInfo(!showInfo)}
         style={{
@@ -73,7 +71,6 @@ export default function Home() {
         All about KingFrog {showInfo ? "▲" : "▼"}
       </button>
 
-      {/* Dropdown */}
       {showInfo && (
         <div style={{
           position: "absolute",
@@ -94,7 +91,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Main Content */}
       <div style={{ zIndex: 5, textAlign: "center", padding: "20px" }}>
         {!session ? (
           <>
@@ -223,5 +219,13 @@ export default function Home() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div style={{ color: "white", textAlign: "center", marginTop: "50px" }}>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -1,4 +1,4 @@
-""use client";
+"use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState, Suspense } from "react";
@@ -13,7 +13,7 @@ function HomeContent() {
 
   useEffect(() => {
     fetch("/api/record-ip", { method: "POST" }).catch(() => {});
-    setLoading(false); // Reset loading when page loads / user comes back
+    setLoading(false);
   }, []);
 
   const handleLogin = async (provider) => {
@@ -25,7 +25,7 @@ function HomeContent() {
     <div style={{
       minHeight: "100vh",
       margin: 0,
-      fontFamily: "'Segoe UI', system-ui, sans-serif",
+      fontFamily: "system-ui, sans-serif",
       background: "linear-gradient(to bottom, #0a2f1f 0%, #0d3b28 35%, #0a1a2f 100%)",
       display: "flex",
       flexDirection: "column",
@@ -35,7 +35,6 @@ function HomeContent() {
       overflow: "hidden",
       color: "white"
     }}>
-      
       <img
         src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"
         alt="KingChat"
@@ -47,8 +46,7 @@ function HomeContent() {
           maxWidth: "55vw",
           opacity: 0.92,
           pointerEvents: "none",
-          zIndex: 1,
-          filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.5))"
+          zIndex: 1
         }}
       />
 
@@ -87,7 +85,7 @@ function HomeContent() {
           <p style={{ margin: "0 0 12px 0", color: "#00FF85", fontWeight: "600" }}>Owner: KingFrog</p>
           <p style={{ margin: "0 0 12px 0", color: "#ddd", fontSize: "14px" }}>Current blacklisted people: View in bot</p>
           <a href="https://discord.gg/4bSFQDA3CZ" target="_blank" style={{ color: "#1E90FF", fontSize: "14px" }}>
-            Join the Discord Server →
+            Join the Discord Server
           </a>
         </div>
       )}
@@ -155,7 +153,6 @@ function HomeContent() {
                     width: "280px"
                   }}
                 >
-                  <img src="https://www.google.com/favicon.ico" width="22" height="22" alt="Google" />
                   Continue with Google
                 </button>
 
@@ -177,12 +174,6 @@ function HomeContent() {
                     width: "280px"
                   }}
                 >
-                  <img 
-                    src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
-                    width="22" 
-                    height="22" 
-                    alt="Discord" 
-                  />
                   Continue with Discord
                 </button>
               </>

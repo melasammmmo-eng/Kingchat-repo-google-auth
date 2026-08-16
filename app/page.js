@@ -35,6 +35,8 @@ function HomeContent() {
       overflow: "hidden",
       color: "white"
     }}>
+      
+      {/* Character */}
       <img
         src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"
         alt="KingChat"
@@ -50,6 +52,7 @@ function HomeContent() {
         }}
       />
 
+      {/* Top Button */}
       <button
         onClick={() => setShowInfo(!showInfo)}
         style={{
@@ -70,6 +73,7 @@ function HomeContent() {
         All about KingFrog {showInfo ? "▲" : "▼"}
       </button>
 
+      {/* Dropdown */}
       {showInfo && (
         <div style={{
           position: "absolute",
@@ -90,6 +94,7 @@ function HomeContent() {
         </div>
       )}
 
+      {/* Main Content */}
       <div style={{ zIndex: 5, textAlign: "center", padding: "20px" }}>
         {!session ? (
           <>
@@ -134,6 +139,7 @@ function HomeContent() {
               </div>
             ) : (
               <>
+                {/* Google Button */}
                 <button
                   onClick={() => handleLogin("google")}
                   style={{
@@ -153,9 +159,16 @@ function HomeContent() {
                     width: "280px"
                   }}
                 >
+                  <img 
+                    src="https://www.google.com/favicon.ico" 
+                    width="22" 
+                    height="22" 
+                    alt="Google" 
+                  />
                   Continue with Google
                 </button>
 
+                {/* Discord Button */}
                 <button
                   onClick={() => handleLogin("discord")}
                   style={{
@@ -174,6 +187,12 @@ function HomeContent() {
                     width: "280px"
                   }}
                 >
+                  <img 
+                    src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
+                    width="22" 
+                    height="22" 
+                    alt="Discord" 
+                  />
                   Continue with Discord
                 </button>
               </>

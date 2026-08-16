@@ -87,7 +87,7 @@ export default function Home() {
           backdropFilter: "blur(10px)",
           boxShadow: "0 10px 30px rgba(0,0,0,0.4)"
         }}>
-          <h3 style={{ margin: "0 0 10px 0", color: "#00FF85" }}>About KingFrog</h3>
+          <h3 style={{ margin: "0 0 10px 0", color: "#00FF85" }}>info on what this is</h3>
           <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.5", color: "#ddd" }}>
             This is the official verification system for KingChat.<br /><br />
             Created to keep the community safe and stop alts / banned users from coming back.

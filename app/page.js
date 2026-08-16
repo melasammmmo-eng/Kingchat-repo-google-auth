@@ -1,10 +1,13 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const { data: session } = useSession();
   const [showInfo, setShowInfo] = useState(false);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   useEffect(() => {
     fetch("/api/record-ip", { method: "POST" }).catch(() => {});
@@ -109,10 +112,29 @@ export default function Home() {
             <p style={{
               color: "rgba(255,255,255,0.85)",
               fontSize: "1.1rem",
-              marginBottom: "50px"
+              marginBottom: "30px"
             }}>
               Secure Access Portal
             </p>
+
+            {/* Error Message */}
+            {error && (
+              <div style={{
+                backgroundColor: "#e74c3c",
+                color: "white",
+                padding: "12px 20px",
+                borderRadius: "12px",
+                marginBottom: "25px",
+                fontSize: "15px",
+                maxWidth: "320px",
+                marginLeft: "auto",
+                marginRight: "auto"
+              }}>
+                {error === "OAuthAccountNotLinked"
+                  ? "This account is already linked to another login method."
+                  : "Something went wrong. Please try again."}
+              </div>
+            )}
 
             {/* Google Button */}
             <button

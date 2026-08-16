@@ -1,4 +1,5 @@
-""use client";
+"use client";
+
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -33,7 +34,7 @@ export default function Home() {
       overflow: "hidden",
       color: "white"
     }}>
-
+      
       {/* Character */}
       <img
         src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"
@@ -51,7 +52,7 @@ export default function Home() {
         }}
       />
 
-      {/* Top Dropdown Button */}
+      {/* Top Button */}
       <button
         onClick={() => setShowInfo(!showInfo)}
         style={{
@@ -65,7 +66,6 @@ export default function Home() {
           fontWeight: "700",
           fontSize: "15px",
           border: "2px solid #00FF85",
-          backdropFilter: "blur(8px)",
           zIndex: 10,
           cursor: "pointer"
         }}
@@ -84,16 +84,11 @@ export default function Home() {
           borderRadius: "20px",
           padding: "18px 22px",
           width: "260px",
-          zIndex: 20,
-          backdropFilter: "blur(12px)"
+          zIndex: 20
         }}>
           <p style={{ margin: "0 0 12px 0", color: "#00FF85", fontWeight: "600" }}>Owner: KingFrog</p>
           <p style={{ margin: "0 0 12px 0", color: "#ddd", fontSize: "14px" }}>Current blacklisted people: View in bot</p>
-          <a 
-            href="https://discord.gg/4bSFQDA3CZ" 
-            target="_blank"
-            style={{ color: "#1E90FF", fontSize: "14px", textDecoration: "none" }}
-          >
+          <a href="https://discord.gg/4bSFQDA3CZ" target="_blank" style={{ color: "#1E90FF", fontSize: "14px" }}>
             Join the Discord Server →
           </a>
         </div>
@@ -103,25 +98,13 @@ export default function Home() {
       <div style={{ zIndex: 5, textAlign: "center", padding: "20px" }}>
         {!session ? (
           <>
-            <h1 style={{
-              color: "white",
-              fontSize: "3.2rem",
-              marginBottom: "8px",
-              fontWeight: "800",
-              textShadow: "0 4px 25px rgba(0,0,0,0.4)"
-            }}>
+            <h1 style={{ color: "white", fontSize: "3.2rem", marginBottom: "8px", fontWeight: "800" }}>
               KingChat
             </h1>
-
-            <p style={{
-              color: "rgba(255,255,255,0.85)",
-              fontSize: "1.1rem",
-              marginBottom: "30px"
-            }}>
+            <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "1.1rem", marginBottom: "30px" }}>
               Secure Access Portal
             </p>
 
-            {/* Error Message */}
             {error && (
               <div style={{
                 backgroundColor: "#e74c3c",
@@ -132,20 +115,16 @@ export default function Home() {
                 fontSize: "15px",
                 maxWidth: "340px",
                 marginLeft: "auto",
-                marginRight: "auto",
-                lineHeight: "1.4"
+                marginRight: "auto"
               }}>
-                {error === "AccessDenied" 
+                {error === "AccessDenied"
                   ? "You are blacklisted and cannot log in."
-                  : error === "OAuthAccountNotLinked"
-                  ? "This account is already linked to another login method."
                   : "Something went wrong. Please try again."}
               </div>
             )}
 
-            {/* Loading Animation */}
             {loading ? (
-              <div style={{ marginTop: "20px" }}>
+              <div>
                 <div style={{
                   width: "40px",
                   height: "40px",
@@ -156,16 +135,10 @@ export default function Home() {
                   margin: "0 auto"
                 }} />
                 <p style={{ marginTop: "15px", color: "#aaa" }}>Logging in...</p>
-                <style>{`
-                  @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                  }
-                `}</style>
+                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
               </div>
             ) : (
               <>
-                {/* Google Button */}
                 <button
                   onClick={() => handleLogin("google")}
                   style={{
@@ -182,16 +155,13 @@ export default function Home() {
                     fontWeight: "700",
                     cursor: "pointer",
                     marginBottom: "16px",
-                    width: "280px",
-                    boxShadow: "0 8px 25px rgba(0, 255, 133, 0.3)",
-                    transition: "all 0.25s ease"
+                    width: "280px"
                   }}
                 >
                   <img src="https://www.google.com/favicon.ico" width="22" height="22" alt="Google" />
                   Continue with Google
                 </button>
 
-                {/* Discord Button */}
                 <button
                   onClick={() => handleLogin("discord")}
                   style={{
@@ -207,16 +177,14 @@ export default function Home() {
                     fontSize: "17px",
                     fontWeight: "700",
                     cursor: "pointer",
-                    width: "280px",
-                    boxShadow: "0 8px 25px rgba(30, 144, 255, 0.3)",
-                    transition: "all 0.25s ease"
+                    width: "280px"
                   }}
                 >
                   <img 
                     src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
                     width="22" 
                     height="22" 
-                    alt="Discord"
+                    alt="Discord" 
                   />
                   Continue with Discord
                 </button>
@@ -228,7 +196,6 @@ export default function Home() {
             background: "rgba(0, 0, 0, 0.7)",
             padding: "40px 50px",
             borderRadius: "28px",
-            backdropFilter: "blur(14px)",
             border: "1px solid rgba(0, 255, 133, 0.25)"
           }}>
             <h2 style={{ color: "white", marginBottom: "8px" }}>You are logged in as</h2>

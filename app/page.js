@@ -1,4 +1,4 @@
-"use client";
+""use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState, Suspense } from "react";
@@ -13,6 +13,7 @@ function HomeContent() {
 
   useEffect(() => {
     fetch("/api/record-ip", { method: "POST" }).catch(() => {});
+    setLoading(false); // Reset loading when page loads / user comes back
   }, []);
 
   const handleLogin = async (provider) => {
@@ -130,7 +131,7 @@ function HomeContent() {
                   animation: "spin 0.8s linear infinite",
                   margin: "0 auto"
                 }} />
-                <p style={{ marginTop: "15px", color: "#aaa" }}>Logging in...</p>
+                <p style={{ marginTop: "15px", color: "#aaa" }}>Redirecting...</p>
                 <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
               </div>
             ) : (

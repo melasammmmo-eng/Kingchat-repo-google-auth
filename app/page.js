@@ -27,7 +27,7 @@ export default function Home() {
 
       {/* Character Image - smaller + lower */}
       <img
-        src="https://i.imgur.com/your-frog-image.png"   // ← Put your Imgur link here
+        src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"   // ← Put your Imgur link here
         alt="KingChat"
         style={{
           position: "absolute",

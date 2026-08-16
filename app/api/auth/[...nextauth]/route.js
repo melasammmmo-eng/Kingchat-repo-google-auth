@@ -30,16 +30,48 @@ const handler = NextAuth({
         const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
-        await supabase.from("users").insert({
-          discord_id: discordId,
-          google_email: googleEmail,
-          is_blacklisted: false,
-          is_global: false,
-        });
+        // First check if user already exists
+        let existing = null;
+
+        if (discordId) {
+          const { data } = await supabase
+            .from("users")
+            .select("*")
+            .eq("discord_id", discordId)
+            .maybeSingle();
+          existing = data;
+        }
+
+        if (!existing && googleEmail) {
+          const { data } = await supabase
+            .from("users")
+            .select("*")
+            .eq("google_email", googleEmail)
+            .maybeSingle();
+          existing = data;
+        }
+
+        // If user is blacklisted → block login
+        if (existing && existing.is_blacklisted) {
+          return false;
+        }
+
+        // If user doesn't exist yet → create them
+        if (!existing) {
+          await supabase.from("users").insert({
+            discord_id: discordId,
+            google_email: googleEmail,
+            is_blacklisted: false,
+            is_global: false,
+          });
+        }
+
       } catch (err) {
-        console.error("Error saving user:", err);
+        console.error("SignIn error:", err);
+        // Don't block the login even if saving fails
       }
-      return true;
+
+      return true; // Always allow login unless blacklisted
     },
   },
 });

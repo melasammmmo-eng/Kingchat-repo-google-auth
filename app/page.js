@@ -65,7 +65,7 @@ export default function Home() {
         All about KingFrog {showInfo ? "▲" : "▼"}
       </button>
 
-      {/* Dropdown Content */}
+      {/* Dropdown */}
       {showInfo && (
         <div style={{
           position: "absolute",
@@ -144,7 +144,12 @@ export default function Home() {
                 e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 255, 133, 0.3)";
               }}
             >
-              <img src="https://www.google.com/favicon.ico" width="20" height="20" alt="Google" />
+              <img 
+                src="https://www.google.com/favicon.ico" 
+                width="22" 
+                height="22" 
+                alt="Google" 
+              />
               Continue with Google
             </button>
 
@@ -177,7 +182,12 @@ export default function Home() {
                 e.currentTarget.style.boxShadow = "0 8px 25px rgba(30, 144, 255, 0.3)";
               }}
             >
-              <img src="https://discord.com/assets/favicon.ico" width="20" height="20" alt="Discord" />
+              <img 
+                src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
+                width="22" 
+                height="22" 
+                alt="Discord"
+              />
               Continue with Discord
             </button>
           </>

@@ -20,22 +20,24 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
+    error: "/",
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
-        // We will get IP from the record-ip call + login
         const discordId = account.provider === "discord" ? String(profile.id) : null;
         const googleEmail = account.provider === "google" ? user.email : null;
 
         await supabase.from("users").insert({
           discord_id: discordId,
           google_email: googleEmail,
-          ip_address: "login", // temporary
           is_blacklisted: false,
           is_global: false,
         });
       } catch (err) {
-        console.error(err);
+        console.error("Error saving user:", err);
       }
       return true;
     },

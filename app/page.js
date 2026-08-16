@@ -1,4 +1,4 @@
-"use client";
+""use client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -6,12 +6,18 @@ import { useSearchParams } from "next/navigation";
 export default function Home() {
   const { data: session } = useSession();
   const [showInfo, setShowInfo] = useState(false);
+  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
   useEffect(() => {
     fetch("/api/record-ip", { method: "POST" }).catch(() => {});
   }, []);
+
+  const handleLogin = async (provider) => {
+    setLoading(true);
+    await signIn(provider);
+  };
 
   return (
     <div style={{
@@ -61,8 +67,7 @@ export default function Home() {
           border: "2px solid #00FF85",
           backdropFilter: "blur(8px)",
           zIndex: 10,
-          cursor: "pointer",
-          transition: "all 0.25s ease"
+          cursor: "pointer"
         }}
       >
         All about KingFrog {showInfo ? "▲" : "▼"}
@@ -80,8 +85,7 @@ export default function Home() {
           padding: "18px 22px",
           width: "260px",
           zIndex: 20,
-          backdropFilter: "blur(12px)",
-          boxShadow: "0 12px 30px rgba(0,0,0,0.45)"
+          backdropFilter: "blur(12px)"
         }}>
           <p style={{ margin: "0 0 12px 0", color: "#00FF85", fontWeight: "600" }}>Owner: KingFrog</p>
           <p style={{ margin: "0 0 12px 0", color: "#ddd", fontSize: "14px" }}>Current blacklisted people: View in bot</p>
@@ -122,96 +126,102 @@ export default function Home() {
               <div style={{
                 backgroundColor: "#e74c3c",
                 color: "white",
-                padding: "12px 20px",
+                padding: "14px 22px",
                 borderRadius: "12px",
                 marginBottom: "25px",
                 fontSize: "15px",
-                maxWidth: "320px",
+                maxWidth: "340px",
                 marginLeft: "auto",
-                marginRight: "auto"
+                marginRight: "auto",
+                lineHeight: "1.4"
               }}>
-                {error === "OAuthAccountNotLinked"
+                {error === "AccessDenied" 
+                  ? "You are blacklisted and cannot log in."
+                  : error === "OAuthAccountNotLinked"
                   ? "This account is already linked to another login method."
                   : "Something went wrong. Please try again."}
               </div>
             )}
 
-            {/* Google Button */}
-            <button
-              onClick={() => signIn("google")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "12px",
-                backgroundColor: "#00FF85",
-                color: "#000",
-                border: "none",
-                borderRadius: "100px",
-                padding: "16px 42px",
-                fontSize: "17px",
-                fontWeight: "700",
-                cursor: "pointer",
-                marginBottom: "16px",
-                width: "280px",
-                boxShadow: "0 8px 25px rgba(0, 255, 133, 0.3)",
-                transition: "all 0.25s ease"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-3px)";
-                e.currentTarget.style.boxShadow = "0 12px 30px rgba(0, 255, 133, 0.45)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 255, 133, 0.3)";
-              }}
-            >
-              <img 
-                src="https://www.google.com/favicon.ico" 
-                width="22" 
-                height="22" 
-                alt="Google" 
-              />
-              Continue with Google
-            </button>
+            {/* Loading Animation */}
+            {loading ? (
+              <div style={{ marginTop: "20px" }}>
+                <div style={{
+                  width: "40px",
+                  height: "40px",
+                  border: "4px solid rgba(255,255,255,0.2)",
+                  borderTop: "4px solid #00FF85",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                  margin: "0 auto"
+                }} />
+                <p style={{ marginTop: "15px", color: "#aaa" }}>Logging in...</p>
+                <style>{`
+                  @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                  }
+                `}</style>
+              </div>
+            ) : (
+              <>
+                {/* Google Button */}
+                <button
+                  onClick={() => handleLogin("google")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "12px",
+                    backgroundColor: "#00FF85",
+                    color: "#000",
+                    border: "none",
+                    borderRadius: "100px",
+                    padding: "16px 42px",
+                    fontSize: "17px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    marginBottom: "16px",
+                    width: "280px",
+                    boxShadow: "0 8px 25px rgba(0, 255, 133, 0.3)",
+                    transition: "all 0.25s ease"
+                  }}
+                >
+                  <img src="https://www.google.com/favicon.ico" width="22" height="22" alt="Google" />
+                  Continue with Google
+                </button>
 
-            {/* Discord Button */}
-            <button
-              onClick={() => signIn("discord")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "12px",
-                backgroundColor: "#1E90FF",
-                color: "white",
-                border: "none",
-                borderRadius: "100px",
-                padding: "16px 42px",
-                fontSize: "17px",
-                fontWeight: "700",
-                cursor: "pointer",
-                width: "280px",
-                boxShadow: "0 8px 25px rgba(30, 144, 255, 0.3)",
-                transition: "all 0.25s ease"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-3px)";
-                e.currentTarget.style.boxShadow = "0 12px 30px rgba(30, 144, 255, 0.45)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 8px 25px rgba(30, 144, 255, 0.3)";
-              }}
-            >
-              <img 
-                src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
-                width="22" 
-                height="22" 
-                alt="Discord"
-              />
-              Continue with Discord
-            </button>
+                {/* Discord Button */}
+                <button
+                  onClick={() => handleLogin("discord")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "12px",
+                    backgroundColor: "#1E90FF",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "100px",
+                    padding: "16px 42px",
+                    fontSize: "17px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    width: "280px",
+                    boxShadow: "0 8px 25px rgba(30, 144, 255, 0.3)",
+                    transition: "all 0.25s ease"
+                  }}
+                >
+                  <img 
+                    src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
+                    width="22" 
+                    height="22" 
+                    alt="Discord"
+                  />
+                  Continue with Discord
+                </button>
+              </>
+            )}
           </>
         ) : (
           <div style={{

@@ -15,7 +15,7 @@ export default function Home() {
       minHeight: "100vh",
       margin: 0,
       fontFamily: "'Segoe UI', system-ui, sans-serif",
-      background: "linear-gradient(to bottom, #0a2f1f 0%, #0d3b28 30%, #0a1a2f 100%)",
+      background: "linear-gradient(to bottom, #0a2f1f 0%, #0d3b28 35%, #0a1a2f 100%)",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -25,87 +25,80 @@ export default function Home() {
       color: "white"
     }}>
 
-      {/* Character Image - smaller + lower */}
+      {/* Character */}
       <img
-        src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"   // ← Put your Imgur link here
+        src="https://cdn.discordapp.com/attachments/1536454406889799776/1538552875578302564/IMG_0998.png?ex=6a831886&is=6a81c706&hm=1ee6f5cd55fa024e52d2256062c231feff3af8b846b88a3ad30761c576026d3c&"
         alt="KingChat"
         style={{
           position: "absolute",
-          bottom: "-60px",
-          right: "-40px",
-          width: "380px",
+          bottom: "-70px",
+          right: "-50px",
+          width: "360px",
           maxWidth: "55vw",
-          opacity: 0.9,
+          opacity: 0.92,
           pointerEvents: "none",
           zIndex: 1,
           filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.5))"
         }}
       />
 
-      {/* Top Button - All about KingFrog */}
+      {/* Top Dropdown Button */}
       <button
         onClick={() => setShowInfo(!showInfo)}
         style={{
           position: "absolute",
           top: "28px",
           left: "28px",
-          background: "rgba(0, 255, 133, 0.15)",
+          background: "rgba(0, 255, 133, 0.12)",
           color: "#00FF85",
           padding: "11px 22px",
           borderRadius: "40px",
           fontWeight: "700",
           fontSize: "15px",
-          letterSpacing: "0.5px",
           border: "2px solid #00FF85",
           backdropFilter: "blur(8px)",
           zIndex: 10,
           cursor: "pointer",
           transition: "all 0.25s ease"
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = "rgba(0, 255, 133, 0.3)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "rgba(0, 255, 133, 0.15)";
-        }}
       >
-        what is this
+        All about KingFrog {showInfo ? "▲" : "▼"}
       </button>
 
-      {/* Info Popup */}
+      {/* Dropdown Content */}
       {showInfo && (
         <div style={{
           position: "absolute",
           top: "85px",
           left: "28px",
-          background: "rgba(0, 0, 0, 0.85)",
+          background: "rgba(0, 0, 0, 0.88)",
           border: "1px solid #00FF85",
           borderRadius: "20px",
-          padding: "20px 24px",
-          maxWidth: "280px",
+          padding: "18px 22px",
+          width: "260px",
           zIndex: 20,
-          backdropFilter: "blur(10px)",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.4)"
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 12px 30px rgba(0,0,0,0.45)"
         }}>
-          <h3 style={{ margin: "0 0 10px 0", color: "#00FF85" }}>info on what this is</h3>
-          <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.5", color: "#ddd" }}>
-            This is the official verification system for KingChat.<br /><br />
-            Created to keep the community safe and stop alts / banned users from coming back.
-          </p>
+          <p style={{ margin: "0 0 12px 0", color: "#00FF85", fontWeight: "600" }}>Owner: KingFrog</p>
+          <p style={{ margin: "0 0 12px 0", color: "#ddd", fontSize: "14px" }}>Current blacklisted people: View in bot</p>
+          <a 
+            href="https://discord.gg/4bSFQDA3CZ" 
+            target="_blank"
+            style={{ color: "#1E90FF", fontSize: "14px", textDecoration: "none" }}
+          >
+            Join the Discord Server →
+          </a>
         </div>
       )}
 
       {/* Main Content */}
-      <div style={{
-        zIndex: 5,
-        textAlign: "center",
-        padding: "20px"
-      }}>
+      <div style={{ zIndex: 5, textAlign: "center", padding: "20px" }}>
         {!session ? (
           <>
             <h1 style={{
               color: "white",
-              fontSize: "3.3rem",
+              fontSize: "3.2rem",
               marginBottom: "8px",
               fontWeight: "800",
               textShadow: "0 4px 25px rgba(0,0,0,0.4)"
@@ -115,71 +108,103 @@ export default function Home() {
 
             <p style={{
               color: "rgba(255,255,255,0.85)",
-              fontSize: "1.15rem",
-              marginBottom: "45px",
-              fontWeight: "500"
+              fontSize: "1.1rem",
+              marginBottom: "50px"
             }}>
               Secure Access Portal
             </p>
 
+            {/* Google Button */}
             <button
-              onClick={() => signIn()}
+              onClick={() => signIn("google")}
               style={{
-                backgroundColor: "white",
-                color: "#111",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "12px",
+                backgroundColor: "#00FF85",
+                color: "#000",
                 border: "none",
                 borderRadius: "100px",
-                padding: "19px 60px",
-                fontSize: "20px",
+                padding: "16px 42px",
+                fontSize: "17px",
                 fontWeight: "700",
                 cursor: "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
+                marginBottom: "16px",
+                width: "280px",
+                boxShadow: "0 8px 25px rgba(0, 255, 133, 0.3)",
+                transition: "all 0.25s ease"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#00FF85";
-                e.currentTarget.style.color = "#000";
-                e.currentTarget.style.transform = "translateY(-5px) scale(1.03)";
-                e.currentTarget.style.boxShadow = "0 15px 35px rgba(0, 255, 133, 0.5)";
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.boxShadow = "0 12px 30px rgba(0, 255, 133, 0.45)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.color = "#111";
-                e.currentTarget.style.transform = "translateY(0) scale(1)";
-                e.currentTarget.style.boxShadow = "0 10px 30px rgba(0,0,0,0.3)";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 255, 133, 0.3)";
               }}
             >
-              Log in
+              <img src="https://www.google.com/favicon.ico" width="20" height="20" alt="Google" />
+              Continue with Google
+            </button>
+
+            {/* Discord Button */}
+            <button
+              onClick={() => signIn("discord")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "12px",
+                backgroundColor: "#1E90FF",
+                color: "white",
+                border: "none",
+                borderRadius: "100px",
+                padding: "16px 42px",
+                fontSize: "17px",
+                fontWeight: "700",
+                cursor: "pointer",
+                width: "280px",
+                boxShadow: "0 8px 25px rgba(30, 144, 255, 0.3)",
+                transition: "all 0.25s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.boxShadow = "0 12px 30px rgba(30, 144, 255, 0.45)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(30, 144, 255, 0.3)";
+              }}
+            >
+              <img src="https://discord.com/assets/favicon.ico" width="20" height="20" alt="Discord" />
+              Continue with Discord
             </button>
           </>
         ) : (
           <div style={{
-            background: "rgba(0, 0, 0, 0.65)",
-            padding: "45px 55px",
-            borderRadius: "32px",
+            background: "rgba(0, 0, 0, 0.7)",
+            padding: "40px 50px",
+            borderRadius: "28px",
             backdropFilter: "blur(14px)",
-            border: "1px solid rgba(0, 255, 133, 0.25)",
-            boxShadow: "0 15px 40px rgba(0,0,0,0.4)"
+            border: "1px solid rgba(0, 255, 133, 0.25)"
           }}>
-            <h2 style={{ color: "white", marginBottom: "6px", fontSize: "1.8rem" }}>
-              You are logged in as
-            </h2>
-            <p style={{ color: "#00FF85", fontSize: "1.3rem", marginBottom: "18px", fontWeight: "600" }}>
+            <h2 style={{ color: "white", marginBottom: "8px" }}>You are logged in as</h2>
+            <p style={{ color: "#00FF85", fontSize: "1.25rem", marginBottom: "16px", fontWeight: "600" }}>
               {session.user?.name || session.user?.email || "Unknown"}
             </p>
-            <p style={{ color: "#ccc", fontSize: "15px", marginBottom: "32px" }}>
-              Please wait up to 5 minutes for the system to process your login.
+            <p style={{ color: "#bbb", fontSize: "14px", marginBottom: "28px" }}>
+              Please wait up to 5 minutes for the system to process.
             </p>
-
             <button
               onClick={() => signOut()}
               style={{
-                backgroundColor: "transparent",
+                background: "transparent",
                 color: "white",
-                border: "2px solid rgba(255,255,255,0.7)",
+                border: "2px solid #00FF85",
                 borderRadius: "100px",
-                padding: "12px 36px",
-                fontSize: "16px",
+                padding: "11px 32px",
+                fontSize: "15px",
                 cursor: "pointer"
               }}
             >

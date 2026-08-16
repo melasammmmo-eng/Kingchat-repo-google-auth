@@ -69,7 +69,7 @@ export default function Home() {
           e.currentTarget.style.background = "rgba(0, 255, 133, 0.15)";
         }}
       >
-        All about KingFrog
+        what is this
       </button>
 
       {/* Info Popup */}

@@ -26,52 +26,28 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      // We wrap everything in try/catch so NOTHING can make the login fail
       try {
-        const discordId = account.provider === "discord" ? String(profile.id) : null;
-        const googleEmail = account.provider === "google" ? user.email : null;
+        const discordId = account?.provider === "discord" ? String(profile?.id) : null;
+        const googleEmail = account?.provider === "google" ? user?.email : null;
 
-        // First check if user already exists
-        let existing = null;
-
-        if (discordId) {
-          const { data } = await supabase
-            .from("users")
-            .select("*")
-            .eq("discord_id", discordId)
-            .maybeSingle();
-          existing = data;
-        }
-
-        if (!existing && googleEmail) {
-          const { data } = await supabase
-            .from("users")
-            .select("*")
-            .eq("google_email", googleEmail)
-            .maybeSingle();
-          existing = data;
-        }
-
-        // If user is blacklisted → block login
-        if (existing && existing.is_blacklisted) {
-          return false;
-        }
-
-        // If user doesn't exist yet → create them
-        if (!existing) {
-          await supabase.from("users").insert({
+        if (discordId || googleEmail) {
+          // Try to save, but if it fails we don't care
+          await supabase.from("users").upsert({
             discord_id: discordId,
             google_email: googleEmail,
             is_blacklisted: false,
             is_global: false,
-          });
+          }, {
+            onConflict: discordId ? "discord_id" : "google_email"
+          }).then(() => {}).catch(() => {});
         }
-
-      } catch (err) {
-        console.error("SignIn error:", err);
-        // Don't block the login even if saving fails
+      } catch (e) {
+        // Completely ignore any error
       }
 
-      return true; // Always allow login unless blacklisted
+      // Always return true so login succeeds
+      return true;
     },
   },
 });

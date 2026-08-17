@@ -105,6 +105,7 @@ function HomeContent() {
               Secure Access Portal
             </p>
 
+            {/* Error Message - now shows the real error name */}
             {error && (
               <div style={{
                 backgroundColor: "#e74c3c",
@@ -115,11 +116,12 @@ function HomeContent() {
                 fontSize: "15px",
                 maxWidth: "340px",
                 marginLeft: "auto",
-                marginRight: "auto"
+                marginRight: "auto",
+                lineHeight: "1.4"
               }}>
                 {error === "AccessDenied"
                   ? "You are blacklisted and cannot log in."
-                  : "Something went wrong. Please try again."}
+                  : `Error: ${error}`}
               </div>
             )}
 

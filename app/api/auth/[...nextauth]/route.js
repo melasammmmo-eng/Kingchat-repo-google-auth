@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-export const authOptions = {
+const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -20,6 +20,7 @@ export const authOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,               // Important for Vercel
   pages: {
     signIn: "/",
     error: "/",
@@ -39,14 +40,12 @@ export const authOptions = {
           });
         }
       } catch (err) {
-        console.log("Database save failed (ignored):", err.message);
+        console.log("DB error ignored:", err.message);
       }
-
       return true;
     },
   },
-};
-
-const handler = NextAuth(authOptions);
+  debug: true, // This will show more info in Vercel logs
+});
 
 export { handler as GET, handler as POST };

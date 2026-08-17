@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -26,30 +26,27 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // We wrap everything in try/catch so NOTHING can make the login fail
       try {
         const discordId = account?.provider === "discord" ? String(profile?.id) : null;
         const googleEmail = account?.provider === "google" ? user?.email : null;
 
         if (discordId || googleEmail) {
-          // Try to save, but if it fails we don't care
           await supabase.from("users").upsert({
             discord_id: discordId,
             google_email: googleEmail,
             is_blacklisted: false,
             is_global: false,
-          }, {
-            onConflict: discordId ? "discord_id" : "google_email"
-          }).then(() => {}).catch(() => {});
+          });
         }
-      } catch (e) {
-        // Completely ignore any error
+      } catch (err) {
+        console.log("Database save failed (ignored):", err.message);
       }
 
-      // Always return true so login succeeds
       return true;
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

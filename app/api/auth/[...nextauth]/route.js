@@ -20,10 +20,39 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-  trustHost: true,               // Important for Vercel
+  trustHost: true,
   pages: {
     signIn: "/",
     error: "/",
+  },
+  cookies: {
+    state: {
+      name: "next-auth.state",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+    pkceCodeVerifier: {
+      name: "next-auth.pkce.code_verifier",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: "next-auth.callback-url",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
   },
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -45,7 +74,6 @@ const handler = NextAuth({
       return true;
     },
   },
-  debug: true, // This will show more info in Vercel logs
 });
 
 export { handler as GET, handler as POST };

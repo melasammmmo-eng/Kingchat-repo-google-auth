@@ -21,13 +21,14 @@ const handler = NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
+  useSecureCookies: true,
   pages: {
     signIn: "/",
     error: "/",
   },
   cookies: {
     state: {
-      name: "next-auth.state",
+      name: `__Secure-next-auth.state`,
       options: {
         httpOnly: true,
         sameSite: "none",
@@ -36,7 +37,7 @@ const handler = NextAuth({
       },
     },
     pkceCodeVerifier: {
-      name: "next-auth.pkce.code_verifier",
+      name: `__Secure-next-auth.pkce.code_verifier`,
       options: {
         httpOnly: true,
         sameSite: "none",
@@ -45,7 +46,16 @@ const handler = NextAuth({
       },
     },
     callbackUrl: {
-      name: "next-auth.callback-url",
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "none",
@@ -69,7 +79,7 @@ const handler = NextAuth({
           });
         }
       } catch (err) {
-        console.log("DB error ignored:", err.message);
+        console.log("DB error ignored");
       }
       return true;
     },

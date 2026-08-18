@@ -54,15 +54,6 @@ const handler = NextAuth({
         secure: true,
       },
     },
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "none",
-        path: "/",
-        secure: true,
-      },
-    },
   },
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -70,17 +61,48 @@ const handler = NextAuth({
         const discordId = account?.provider === "discord" ? String(profile?.id) : null;
         const googleEmail = account?.provider === "google" ? user?.email : null;
 
-        if (discordId || googleEmail) {
-          await supabase.from("users").upsert({
-            discord_id: discordId,
-            google_email: googleEmail,
-            is_blacklisted: false,
-            is_global: false,
-          });
+        // Check if user is blacklisted
+        let isBlacklisted = false;
+
+        if (discordId) {
+          const { data } = await supabase
+            .from("users")
+            .select("is_blacklisted")
+            .eq("discord_id", discordId)
+            .eq("is_blacklisted", true)
+            .maybeSingle();
+
+          if (data) isBlacklisted = true;
         }
+
+        if (!isBlacklisted && googleEmail) {
+          const { data } = await supabase
+            .from("users")
+            .select("is_blacklisted")
+            .eq("google_email", googleEmail)
+            .eq("is_blacklisted", true)
+            .maybeSingle();
+
+          if (data) isBlacklisted = true;
+        }
+
+        // Block login if blacklisted
+        if (isBlacklisted) {
+          return false; // This will show "AccessDenied" error
+        }
+
+        // Save / update user if not blacklisted
+        await supabase.from("users").upsert({
+          discord_id: discordId,
+          google_email: googleEmail,
+          is_blacklisted: false,
+          is_global: false,
+        });
+
       } catch (err) {
-        console.log("DB error ignored");
+        console.log("Error in signIn:", err.message);
       }
+
       return true;
     },
   },
